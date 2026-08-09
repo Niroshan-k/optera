@@ -1,19 +1,21 @@
 """
-Optera Master Report Compiler & Consolidator (v2.0)
+Optera Master Executive Report Compiler & Consolidator (v2.0)
 
-Merges all three operational layer reports:
-1. Layer 1: ETL & Demand Analytical Distribution Fitting Report
-2. Layer 2: Particle Swarm Portfolio Optimization Report
-3. Layer 3: Event-Driven Monte Carlo Simulation Execution Report
+Merges all four operational layer reports:
+1. Layer 1: ETL Data Quality & Feature Engineering Report
+2. Layer 2: Demand Analytical Distribution Fitting Report
+3. Layer 3: Particle Swarm Portfolio Optimization Report
+4. Layer 4: Event-Driven Monte Carlo Simulation Execution Report
 
 Generates:
-- `output_dir/reports/optera_master_report.md`
-- `output_dir/pdfs/optera_master_report.pdf`
+- `output_dir/optera_report.md`
+- `output_dir/optera_report.pdf`
 """
 
 import logging
+import re
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
 from optera.utils.pdf_generator import OpteraPDFBuilder
 
@@ -102,34 +104,32 @@ class MasterReporter:
 - **Markdown Master Artifact**: `{master_md_file}`
 """
 
-        # Normalize file:/// image URIs with spaces into clean relative plot paths for Markdown compatibility
-        import re
+        # Normalize image URIs into clean relative plot paths for Markdown rendering
         def clean_img_paths(match):
             alt_text = match.group(1)
             raw_url = match.group(2)
             if "plots/" in raw_url:
-                plot_name = raw_url.split("plots/")[-1]
-                return f"![{alt_text}](plots/{plot_name})"
+                plot_filename = raw_url.split("plots/")[-1]
+                return f"![{alt_text}](plots/{plot_filename})"
             return match.group(0)
 
-        master_content_cleaned = re.sub(r"!\[(.*?)\]\((.*?)\)", clean_img_paths, master_content)
+        master_content = re.sub(r"!\[(.*?)\]\((.*?)\)", clean_img_paths, master_content)
 
         with open(master_md_file, "w", encoding="utf-8") as f:
-            f.write(master_content_cleaned)
+            f.write(master_content)
 
         logger.info("Compiled Integrated Master Markdown Report -> %s", master_md_file)
 
-        # Build PDF Master Report
+        # Build Executive PDF Report
         try:
             pdf_builder = OpteraPDFBuilder(
-                title="Optera Integrated Supply Chain Executive Master Report",
-                subtitle="End-to-End Demand Analytics, Portfolio Optimization & Monte Carlo Simulation"
+                title="Optera Quantitative Supply Chain Framework",
+                subtitle="Master Executive Report & End-to-End Analytics"
             )
-
-            pdf_builder.add_markdown(master_content_cleaned, workspace_dir=self.workspace_dir)
+            pdf_builder.add_markdown(master_content, workspace_dir=self.workspace_dir)
             pdf_builder.build(master_pdf_file)
             logger.info("Compiled Executive Master PDF Report -> %s", master_pdf_file)
         except Exception as e:
-            logger.warning("PDF Master generation notice: %s", e)
+            logger.error("Failed to generate Master PDF report: %s", e)
 
         return master_md_file

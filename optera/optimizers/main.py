@@ -170,10 +170,10 @@ def run_optimization(
     logger.info("Optimization complete in %.3fs.", duration)
     logger.info("=" * 70)
     logger.info("OPTERA OPTIMIZATION LAYER EXECUTED SUCCESSFULLY!")
-    logger.info("Optimization Results JSON -> %s", OUTPUT_JSON)
+    logger.info("Optimization Results JSON -> %s", output_json)
     logger.info("Optimization Markdown    -> %s", md_file)
     logger.info("Optimization PDF Report  -> %s", pdf_file)
-    logger.info("Evaluation Plots Saved   -> %s", PLOTS_DIR)
+    logger.info("Evaluation Plots Saved   -> %s", plots_dir)
     logger.info("=" * 70)
 
     # Print Summary Table to Console

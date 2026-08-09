@@ -159,11 +159,11 @@ def run_simulation(
     logger.info("Simulation complete in %.3fs.", duration)
     logger.info("=" * 70)
     logger.info("OPTERA MONTE CARLO SIMULATION LAYER EXECUTED SUCCESSFULLY!")
-    logger.info("Simulation JSON Output -> %s", OUTPUT_JSON)
+    logger.info("Simulation JSON Output -> %s", output_json)
     logger.info("Simulation Paths CSV  -> %s", results["csv_paths_file"])
     logger.info("Simulation Markdown   -> %s", md_file)
     logger.info("Simulation PDF Report -> %s", pdf_file)
-    logger.info("Visual Plots Saved    -> %s", PLOTS_DIR)
+    logger.info("Visual Plots Saved    -> %s", plots_dir)
     logger.info("=" * 70)
 
     # Print Executive KPI Table to Console

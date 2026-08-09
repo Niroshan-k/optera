@@ -32,12 +32,12 @@ if str(ROOT.parent) not in sys.path:
 
 import pandas as pd
 
-from src.etl.Schema import Schema
-from src.etl.validator import DataValidator
-from src.etl import cleaner
-from src.etl import feature_engineering
-from src.etl import aggregator
-from src.etl.reporter import ETLReporter
+from optera.etl.src.etl.Schema import Schema
+from optera.etl.src.etl.validator import DataValidator
+from optera.etl.src.etl import cleaner
+from optera.etl.src.etl import feature_engineering
+from optera.etl.src.etl import aggregator
+from optera.etl.src.etl.reporter import ETLReporter
 
 # Setup logging
 logging.basicConfig(

@@ -1,11 +1,16 @@
-"""Particle Swarm Optimization (simplified) stub."""
+"""
+Optera Particle Swarm Optimization (PSO) Module
 
-def optimize(fitness_fn, bounds, swarm_size=50, iterations=100):
-    """Return a dummy best solution (center of bounds).
+Exports the production-grade Markowitz-Herfindahl Inertia-Weighted PSO Portfolio Optimization Engine.
+"""
 
-    This is a placeholder that returns midpoint of each bound.
+from optera.optimizers.pso_wrapper import OpteraPSO, PSOPortfolioOptimizer, optimize_portfolio
+
+__all__ = ["OpteraPSO", "PSOPortfolioOptimizer", "optimize_portfolio", "optimize"]
+
+
+def optimize(*args, **kwargs):
     """
-    best = []
-    for low, high in bounds:
-        best.append((low + high) / 2.0)
-    return best
+    Alias function delegating to the production Optera PSO portfolio optimization engine.
+    """
+    return optimize_portfolio(*args, **kwargs)

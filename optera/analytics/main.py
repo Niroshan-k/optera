@@ -28,8 +28,8 @@ if str(ROOT) not in sys.path:
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from analytics.profiler import CategoryDemandProfiler, export_demand_model
-from analytics.reporter import AnalyticsReporter
+from optera.analytics.src.analytics.profiler import CategoryDemandProfiler, export_demand_model
+from optera.analytics.src.analytics.reporter import AnalyticsReporter
 
 # Setup logging
 logging.basicConfig(
@@ -103,9 +103,13 @@ def run_analytics(
     input_csv = src_csv
 
     # 1. Load pipeline metadata for validation/logging
-    if METADATA_JSON.exists():
+    meta_json = workspace / "data" / "processed" / "metadata.json"
+    if not meta_json.exists():
+        meta_json = METADATA_JSON
+
+    if meta_json.exists():
         try:
-            with open(METADATA_JSON, "r", encoding="utf-8") as f:
+            with open(meta_json, "r", encoding="utf-8") as f:
                 meta = json.load(f)
             logger.info("Loaded ETL pipeline metadata. Execution timestamp: %s", meta.get("execution_timestamp"))
             logger.info("Dataset dimensions: %s", meta.get("dataset", {}).get("dimensions"))

@@ -28,7 +28,7 @@ optera_dir = Path(__file__).resolve().parent.parent.parent.parent
 if str(optera_dir) not in sys.path:
     sys.path.insert(0, str(optera_dir))
 
-from utils.pdf_generator import OpteraPDFBuilder
+from optera.utils.pdf_generator import OpteraPDFBuilder
 
 # Monospace quant-terminal styling
 plt.style.use("seaborn-v0_8-whitegrid" if "seaborn-v0_8-whitegrid" in plt.style.available else "default")

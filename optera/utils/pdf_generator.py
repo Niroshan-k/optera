@@ -2,13 +2,14 @@
 Optera PDF Report Builder & Compiler Utility
 
 Uses ReportLab to generate publication-grade, executive PDF reports
-for all Optera layers (ETL, Analytics, Optimization).
+for all Optera layers (ETL, Analytics, Optimization, Simulation).
 """
 
 from __future__ import annotations
 
 import logging
 import os
+import re
 from pathlib import Path
 from typing import Any, List, Optional, Union
 
@@ -59,14 +60,10 @@ class NumberedCanvas(canvas.Canvas):
         self.setFont("Helvetica", 8)
         self.setFillColor(colors.HexColor("#666666"))
 
-        # Header rule & title
-        self.setStrokeColor(colors.HexColor("#E0E0E0"))
-        self.setLineWidth(0.5)
-
         # Footer
         page_text = f"Page {self._pageNumber} of {page_count}"
         self.drawRightString(612 - 36, 20, page_text)
-        self.drawString(36, 20, "Optera Quantitative Supply Chain Engine — Official Report")
+        self.drawString(36, 20, "Optera Quantitative Supply Chain Engine — Official Executive Report")
         self.line(36, 30, 612 - 36, 30)
 
         self.restoreState()
@@ -77,7 +74,7 @@ class OpteraPDFBuilder:
     Executive PDF Report Builder.
     """
 
-    def __init__(self, title: str, subtitle: Optional[str] = None):
+    def __init__(self, title: str = "Optera Framework Executive Report", subtitle: Optional[str] = None):
         self.title = title
         self.subtitle = subtitle
         self.story = []
@@ -168,7 +165,7 @@ class OpteraPDFBuilder:
             fontSize=7.5,
             leading=9.5,
             textColor=colors.white,
-            alignment=1  # Center
+            alignment=1
         )
 
         self.table_cell_style = ParagraphStyle(
@@ -178,7 +175,7 @@ class OpteraPDFBuilder:
             fontSize=7.0,
             leading=9.0,
             textColor=self.TEXT_DARK,
-            alignment=0  # Left
+            alignment=0
         )
 
     def _build_header(self):
@@ -207,9 +204,7 @@ class OpteraPDFBuilder:
         self.story.append(Spacer(1, height))
 
     def add_table(self, df: pd.DataFrame, max_width: float = 540.0):
-        """
-        Renders a pandas DataFrame as a styled ReportLab Table.
-        """
+        """Renders a pandas DataFrame as a styled ReportLab Table."""
         headers = [Paragraph(str(col), self.table_header_style) for col in df.columns]
 
         data_rows = []
@@ -247,9 +242,7 @@ class OpteraPDFBuilder:
         self.story.append(Spacer(1, 8))
 
     def add_image(self, image_path: Union[str, Path], max_width: float = 530.0, max_height: float = 240.0):
-        """
-        Scales and embeds an image into the PDF.
-        """
+        """Scales and embeds an image into the PDF."""
         img_path = Path(image_path)
         if not img_path.exists():
             logger.warning("Image file not found for PDF inclusion: %s", img_path)
@@ -274,122 +267,79 @@ class OpteraPDFBuilder:
         except Exception as e:
             logger.error("Failed to embed image in PDF (%s): %s", img_path, e)
 
-    def add_markdown(self, md_content: str, workspace_dir: Optional[Path] = None):
-        """
-        Parses Markdown content and converts headers, paragraphs, bullet lists,
-        tables, and images into ReportLab flowables.
-        """
-        import re
+    def add_markdown(self, md_content: str, workspace_dir: Optional[Union[str, Path]] = None):
+        """Parses full Markdown content into ReportLab flowables."""
         lines = md_content.splitlines()
-        i = 0
-        n = len(lines)
+        in_table = False
+        table_lines = []
 
-        while i < n:
-            line = lines[i].strip()
+        def flush_table():
+            nonlocal in_table, table_lines
+            if not table_lines:
+                return
+            try:
+                headers = [h.strip() for h in table_lines[0].strip("|").split("|")]
+                rows = []
+                for row_line in table_lines[2:]:
+                    cols = [c.strip() for c in row_line.strip("|").split("|")]
+                    if len(cols) == len(headers):
+                        rows.append(cols)
+                if rows:
+                    df = pd.DataFrame(rows, columns=headers)
+                    self.add_table(df)
+            except Exception as ex:
+                logger.warning("Failed to parse markdown table: %s", ex)
+            table_lines = []
+            in_table = False
 
-            if not line:
-                i += 1
+        ws = Path(workspace_dir).resolve() if workspace_dir else Path.cwd()
+
+        for line in lines:
+            s_line = line.strip()
+
+            if s_line.startswith("|") and s_line.endswith("|"):
+                in_table = True
+                table_lines.append(s_line)
+                continue
+            elif in_table:
+                flush_table()
+
+            if not s_line:
                 continue
 
-            # 1. Horizontal Rules
-            if line.startswith("---") or line.startswith("***"):
-                self.story.append(HRFlowable(width="100%", thickness=1, color=self.BORDER_COLOR, spaceAfter=8, spaceBefore=8))
-                i += 1
-                continue
-
-            # 2. Headings
-            if line.startswith("#"):
-                if line.startswith("###"):
-                    level = 3
-                    text = line.lstrip("#").strip()
-                elif line.startswith("##"):
-                    level = 2
-                    text = line.lstrip("#").strip()
+            if s_line.startswith("# "):
+                self.add_heading(s_line[2:].strip(), level=1)
+            elif s_line.startswith("## "):
+                self.add_heading(s_line[3:].strip(), level=2)
+            elif s_line.startswith("### "):
+                self.add_heading(s_line[4:].strip(), level=2)
+            elif s_line.startswith("---"):
+                self.story.append(HRFlowable(width="100%", thickness=0.8, color=self.BORDER_COLOR, spaceBefore=6, spaceAfter=6))
+            elif s_line.startswith("![") and "](" in s_line and s_line.endswith(")"):
+                img_path_str = s_line.split("](")[1][:-1].strip()
+                img_path = Path(img_path_str)
+                if not img_path.is_absolute():
+                    img_path = ws / img_path_str
+                self.add_image(img_path)
+            elif s_line.startswith("- ") or s_line.startswith("* "):
+                text = s_line[2:].strip()
+                if ":" in text:
+                    k, v = text.split(":", 1)
+                    self.add_bullet(k.strip(), v.strip())
                 else:
-                    level = 1
-                    text = line.lstrip("#").strip()
-                
-                text = re.sub(r"\*\*(.*?)\*\*", r"<b>\1</b>", text)
-                self.add_heading(text, level=level)
-                i += 1
-                continue
+                    self.add_paragraph(f"• {text}")
+            elif s_line.startswith("> "):
+                self.add_paragraph(f"<i>{s_line[2:].strip()}</i>")
+            else:
+                formatted_line = re.sub(r"\\*\\*(.*?)\\*\\*", r"<b>\\1</b>", s_line)
+                formatted_line = re.sub(r"`(.*?)`", r"<font face=\"Courier\">\\1</font>", formatted_line)
+                self.add_paragraph(formatted_line)
 
-            # 3. Images: ![alt](path)
-            img_match = re.match(r"!\[(.*?)\]\((.*?)\)", line)
-            if img_match:
-                img_path_str = img_match.group(2).strip()
-                if img_path_str.startswith("file:///"):
-                    img_path_str = img_path_str.replace("file:///", "").replace("%20", " ")
-                
-                p = Path(img_path_str)
-                if not p.is_absolute() and workspace_dir:
-                    p = (workspace_dir / p).resolve()
-                
-                if p.exists():
-                    self.add_image(p)
-                else:
-                    logger.warning("Image path for PDF embed not found: %s", p)
-                i += 1
-                continue
-
-            # 4. Markdown Tables: | Header | Header |
-            if line.startswith("|") and "|" in line[1:]:
-                table_lines = []
-                while i < n and lines[i].strip().startswith("|"):
-                    table_lines.append(lines[i].strip())
-                    i += 1
-
-                try:
-                    parsed_rows = []
-                    for tline in table_lines:
-                        if re.match(r"^\|[\s:\-\|]+\|$", tline):
-                            continue
-                        cells = [c.strip() for c in tline.split("|")[1:-1]]
-                        formatted_cells = []
-                        for cell in cells:
-                            cell_fmt = re.sub(r"\*\*(.*?)\*\*", r"<b>\1</b>", cell)
-                            cell_fmt = re.sub(r"`(.*?)`", r"<font name='Courier'>\1</font>", cell_fmt)
-                            formatted_cells.append(cell_fmt)
-                        parsed_rows.append(formatted_cells)
-
-                    if len(parsed_rows) >= 2:
-                        header_row = parsed_rows[0]
-                        data_rows = parsed_rows[1:]
-                        df = pd.DataFrame(data_rows, columns=header_row)
-                        self.add_table(df)
-                except Exception as e:
-                    logger.warning("Failed to parse markdown table into PDF: %s", e)
-                continue
-
-            # 5. Bullet Points: - item or * item or • item or 1. item
-            bullet_match = re.match(r"^([•\-\*]|\d+\.)\s+(.*)", line)
-            if bullet_match:
-                item_text = bullet_match.group(2)
-                item_text = re.sub(r"\*\*(.*?)\*\*", r"<b>\1</b>", item_text)
-                item_text = re.sub(r"`(.*?)`", r"<font name='Courier'>\1</font>", item_text)
-                self.story.append(Paragraph(f"• {item_text}", self.bullet_style))
-                i += 1
-                continue
-
-            # 6. Blockquotes: > quote
-            if line.startswith(">"):
-                quote_text = line.lstrip(">").strip()
-                quote_text = re.sub(r"\*\*(.*?)\*\*", r"<b>\1</b>", quote_text)
-                self.add_paragraph(f"<i>{quote_text}</i>")
-                i += 1
-                continue
-
-            # 7. Standard Paragraph Text
-            paragraph_text = line
-            paragraph_text = re.sub(r"\*\*(.*?)\*\*", r"<b>\1</b>", paragraph_text)
-            paragraph_text = re.sub(r"`(.*?)`", r"<font name='Courier'>\1</font>", paragraph_text)
-            self.add_paragraph(paragraph_text)
-            i += 1
+        if in_table:
+            flush_table()
 
     def build(self, output_pdf_path: Union[str, Path]) -> Path:
-        """
-        Compiles and writes the PDF file to disk.
-        """
+        """Compiles and writes the PDF file to disk."""
         out_path = Path(output_pdf_path)
         out_path.parent.mkdir(parents=True, exist_ok=True)
 
