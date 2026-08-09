@@ -327,15 +327,15 @@ Optera executes a day-by-day event-driven simulation over $M = 1,000$ independen
    - $S_i$: Target inventory level after reordering.
    - $Q_{\text{allocated}, i}$: Procurement order quantity funded by optimal allocation budget weight $w_i^*$.
 
-#### Risk Metrics: Value at Risk ($VaR$) & Conditional Value at Risk ($CVaR$)
+#### Risk Metrics: Value at Risk (VaR) & Conditional Value at Risk (CVaR)
 
-1. **Value at Risk ($VaR_{1-\alpha}$)**:
-   $$VaR_{1-\alpha}(P) = \inf \{ p \in \mathbb{R} : F_P(p) \ge \alpha \}$$
-   - $VaR_{5\%}$: 5th percentile worst-case profit boundary across 1,000 simulation trial paths.
+1. **Value at Risk ($\text{VaR}_{\alpha}$)**:
+   $$\text{VaR}_{\alpha}(P) = \inf \left\{ p \in \mathbb{R} : F_P(p) \ge \alpha \right\}$$
+   - **VaR (5%)**: 5th percentile worst-case profit boundary across 1,000 simulation trial paths.
 
-2. **Conditional Value at Risk ($CVaR_{1-\alpha}$)**:
-   $$CVaR_{1-\alpha}(P) = \mathbb{E}\left[ P \mid P \le VaR_{1-\alpha}(P) \right]$$
-   - $CVaR_{5\%}$: Expected shortfall (average profit across the worst 5% simulation outcomes).
+2. **Conditional Value at Risk ($\text{CVaR}_{\alpha}$)**:
+   $$\text{CVaR}_{\alpha}(P) = \mathbb{E}\left[ P \mid P \le \text{VaR}_{\alpha}(P) \right]$$
+   - **CVaR (5%)**: Expected shortfall (average profit across the worst 5% simulation outcomes).
 
 ---
 
