@@ -155,10 +155,10 @@ def run_analytics(
     print("\n" + "=" * 70)
     print("OPTERA DEMAND ANALYTICS LAYER OUTPUTS GENERATED")
     print("=" * 70)
-    print(f"  • Markdown Report   : {report_file.relative_to(PROJECT_ROOT)}")
-    print(f"  • Executive PDF     : {pdf_file.relative_to(PROJECT_ROOT)}")
-    print(f"  • Demand Model JSON : {demand_model_file.relative_to(PROJECT_ROOT)}")
-    print(f"  • Distribution Plots: {PLOTS_DIR.relative_to(PROJECT_ROOT)}")
+    print(f"  • Markdown Report   : {report_file}")
+    print(f"  • Executive PDF     : {pdf_file}")
+    print(f"  • Demand Model JSON : {demand_model_file}")
+    print(f"  • Distribution Plots: {PLOTS_DIR}")
     print("=" * 70 + "\n")
 
     return report_file

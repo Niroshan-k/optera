@@ -6,14 +6,14 @@ setup(
     packages=find_packages(include=["optera", "optera.*"]),
     include_package_data=True,
     install_requires=[
-        "numpy>=1.22.0",
-        "pandas>=1.4.0",
-        "scipy>=1.8.0",
-        "statsmodels>=0.13.0",
-        "scikit-learn>=1.0.0",
-        "matplotlib>=3.5.0",
+        "numpy>=1.20.0",
+        "pandas>=1.3.0",
+        "scipy>=1.7.0",
+        "statsmodels>=0.12.0",
+        "scikit-learn>=0.24.0",
+        "matplotlib>=3.3.0",
         "seaborn>=0.11.0",
-        "reportlab>=3.6.0"
+        "reportlab>=3.5.0"
     ],
     author="Optera Core Development Team",
     description="Quantitative Supply Chain Framework & Stochastic Portfolio Optimization Engine",

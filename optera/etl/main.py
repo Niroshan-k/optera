@@ -258,9 +258,9 @@ def run_pipeline(
     print(daily_demand_df.head(5).to_string(index=False))
     print("=" * 70)
     print("\nREPORTS GENERATED IN 'optera/reports/' & 'optera/pdfs/':")
-    print(f"  • ETL Markdown Report : {etl_report_file.relative_to(PROJECT_ROOT)}")
-    print(f"  • ETL Executive PDF   : {etl_pdf_file.relative_to(PROJECT_ROOT)}")
-    print(f"  • Pipeline Metadata    : {metadata_path.relative_to(PROJECT_ROOT)}")
+    print(f"  • ETL Markdown Report : {etl_report_file}")
+    print(f"  • ETL Executive PDF   : {etl_pdf_file}")
+    print(f"  • Pipeline Metadata    : {metadata_path}")
     print("=" * 70 + "\n")
 
     return daily_demand_path
