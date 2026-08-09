@@ -1,7 +1,7 @@
 <table border="0">
   <tr>
     <td width="245px" valign="top" align="left">
-      <img src="data/logo/logo.png" alt="Optera Logo" width="250" height="250" />
+      <img src="https://raw.githubusercontent.com/Niroshan-k/optera/main/data/logo/logo.png" alt="Optera Logo" width="250" height="250" />
     </td>
     <td valign="top">
       <h1>Optera</h1>

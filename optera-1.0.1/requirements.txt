@@ -1,0 +1,11 @@
+pandas
+numpy
+scipy
+seaborn
+matplotlib
+statsmodels
+reportlab
+pybind11
+streamlit
+pytest
+scikit-learn

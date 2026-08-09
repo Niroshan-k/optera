@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "optera"
-version = "1.0.0"
+version = "1.0.1"
 description = "Quantitative Supply Chain Framework & Stochastic Portfolio Optimization Engine"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -45,6 +45,7 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/Niroshan-k/Event-Driven-Simulation-Framework"
-Repository = "https://github.com/Niroshan-k/Event-Driven-Simulation-Framework"
-"Bug Tracker" = "https://github.com/Niroshan-k/Event-Driven-Simulation-Framework/issues"
+Homepage = "https://github.com/Niroshan-k/optera"
+Repository = "https://github.com/Niroshan-k/optera"
+"Bug Tracker" = "https://github.com/Niroshan-k/optera/issues"
+"Development Workspace" = "https://github.com/Niroshan-k/Event-Driven-Simulation-Framework"
