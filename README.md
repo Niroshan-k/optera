@@ -329,13 +329,13 @@ Optera executes a day-by-day event-driven simulation over $M = 1,000$ independen
 
 #### Risk Metrics: Value at Risk (VaR) & Conditional Value at Risk (CVaR)
 
-1. **Value at Risk ($\text{VaR}_{\alpha}$)**:
-   $$\text{VaR}_{\alpha}(P) = \text{inf} \{ p \in \mathbb{R} : F_P(p) \ge \alpha \}$$
-   - **VaR (5%)**: 5th percentile worst-case profit boundary across 1,000 simulation trial paths.
+**Value at Risk ($\text{VaR}_{\alpha}$)**:
+$$\text{VaR}_{\alpha}(P) = \text{inf} \{ p \in \mathbb{R} : F_P(p) \ge \alpha \}$$
+- **VaR (5%)**: 5th percentile worst-case profit boundary across 1,000 simulation trial paths.
 
-2. **Conditional Value at Risk ($\text{CVaR}_{\alpha}$)**:
-   $$\text{CVaR}_{\alpha}(P) = \mathbb{E}[ P \mid P \le \text{VaR}_{\alpha}(P) ]$$
-   - **CVaR (5%)**: Expected shortfall (average profit across the worst 5% simulation outcomes).
+**Conditional Value at Risk ($\text{CVaR}_{\alpha}$)**:
+$$\text{CVaR}_{\alpha}(P) = \mathbb{E}[ P \mid P \le \text{VaR}_{\alpha}(P) ]$$
+- **CVaR (5%)**: Expected shortfall (average profit across the worst 5% simulation outcomes).
 
 ---
 
