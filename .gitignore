@@ -36,7 +36,6 @@ ENV/
 .idea/
 
 # Local user outputs & data
-data/
 reports/
 pdfs/
 plots/
