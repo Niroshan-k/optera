@@ -71,6 +71,8 @@ column_mapping = {
 
 ## Quickstart & Code Examples
 
+For a detailed step-by-step setup guide (virtual environment configuration, hardware performance tuning for low-spec machines, and troubleshooting), read **[GUIDE.md](GUIDE.md)**.
+
 Optera supports two execution patterns: **1-Line Integrated Execution** (`optera.run()`) and **Layer-by-Layer Modular Execution** (`optera.etl()`, `optera.analytics()`, `optera.optimize()`, `optera.simulation()`).
 
 ### Method A: Integrated 1-Line Execution
