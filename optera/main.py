@@ -94,12 +94,21 @@ def run(
     safety_stock_z : float
         Safety stock z-factor multiplier (e.g., 1.645 for 95% service level).
     """
-    logger.info("=" * 80)
-    logger.info("OPTERA SUPPLY CHAIN INTEGRATED FRAMEWORK (v2.0)")
-    logger.info("=" * 80)
+    from optera.utils.ascii_art import print_ascii_banner
+    from optera.utils.logger import setup_optera_logging
 
     workspace_dir = Path(output_dir).resolve() if output_dir else Path.cwd()
     workspace_dir.mkdir(parents=True, exist_ok=True)
+
+    # Print ASCII Art Banner to Console
+    print_ascii_banner(version="1.0.2")
+
+    # Initialize workspace log file handler (output_dir/optera.log)
+    setup_optera_logging(output_dir=workspace_dir)
+
+    logger.info("OPTERA SUPPLY CHAIN INTEGRATED FRAMEWORK (v1.0.2)")
+    logger.info("Logging persistent execution trace -> %s", workspace_dir / "optera.log")
+    logger.info("=" * 80)
 
     input_csv = Path(data_path).resolve() if data_path else (workspace_dir / "demand_forecasting.csv" if (workspace_dir / "demand_forecasting.csv").exists() else ROOT / "etl" / "data" / "raw" / "demand_forecasting.csv")
 
