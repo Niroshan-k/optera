@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="optera",
-    version="1.0.1",
+    version="1.0.2",
     packages=find_packages(include=["optera", "optera.*"]),
     include_package_data=True,
     install_requires=[
